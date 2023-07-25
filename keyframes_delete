@@ -1,0 +1,32 @@
+import maya.cmds as cmds
+​
+def validate():
+    # Check if there is any animation in the scene
+    animCurve = cmds.ls(type=('animCurveTA', 'animCurveTL', 'animCurveTT', 'animCurveTU'))
+    controls_with_animation = [control for control in animCurve if cmds.keyframe(control, q=True, keyframeCount=True) > 0]
+​
+    if controls_with_animation:
+        print("Controls with animation:")
+        for control in controls_with_animation:
+            print(f"   {control}")
+    else:
+        print("No animation found on any controls.")
+​
+def repair():
+    # Remove keyframes but keep SDKs
+    animCurve = cmds.ls(type=('animCurveTA', 'animCurveTL', 'animCurveTT', 'animCurveTU'))
+    controls_with_animation = [control for control in animCurve if cmds.keyframe(control, q=True, keyframeCount=True) > 0]
+​
+    for control in controls_with_animation:
+        if cmds.keyframe(control, q=True, name=True):
+            cmds.cutKey(control, clear=True)
+​
+    if controls_with_animation:
+        print("Keyframes removed from controls (Set Driven Keys kept):")
+        for control in controls_with_animation:
+            print(f"   {control}")
+    else:
+        print("No keyframes found on any controls.")
+​
+#validate()
+#repair()
